@@ -38,9 +38,22 @@ jobs:
         echo "$Py3_ROOT_DIR" >> $GITHUB_PATH
 
     - name: Show shell configuration
+      env:
+        PATH: ${{ env.PATH }}
+      run: env
+
+    - name: Show shell configuration
       run: |
+        export PATH=${{ env.PATH }}
+
         env
+
+        echo where git && git --version
         where git && git --version
+
+        echo where make && make --version
         where make && make --version
+
+        echo where python3 && python3 --version
         where python3 && python3 --version
 
