@@ -5,24 +5,42 @@ on:
   pull_request:
 
 jobs:
-  windows-msvc:
+  windows-msys2:
     runs-on: windows-latest
 
     defaults:
       run:
-        shell: cmd
+        shell: msys2 {0}
 
     steps:
-    - name: Install Core Dependencies
-      run: |
-        choco install -y make
-        choco install -y swig --side-by-side --version=3.0.12
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+        architecture: x64
 
-    - name: Build & Test
-      run: |
-        set TCL_DIR=%PROGRAMFILES%\Git\mingw64\bin
-        set SWIG_DIR=%PROGRMDATA%\chocolatey\lib\swig\tools\install\swigwin-3.0.12
-        set PATH=%pythonLocation%;%SWIG_DIR%;%JAVA_HOME%\bin;%MAKE_DIR%;%TCL_DIR%;%PATH%
+    - name: Setup Msys2
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MSYS
+        update: true
+        install: make git diffutils
+      env:
+        MSYS2_PATH_TYPE: inherit
 
-        set
-        where swig && swig -version
+    - name: Configure shell environment variables
+      run: |
+        export Py3_ROOT_DIR=`cygpath -u $pythonLocation`
+
+        echo "Py3_ROOT_DIR=$Py3_ROOT_DIR" >> $GITHUB_ENV
+        echo "PATH=$Py3_ROOT_DIR:$PATH" >> $GITHUB_ENV
+
+        echo "$Py3_ROOT_DIR" >> $GITHUB_PATH
+
+    - name: Show shell configuration
+      run: |
+        env
+        where git && git --version
+        where make && make --version
+        where python3 && python3 --version
+
