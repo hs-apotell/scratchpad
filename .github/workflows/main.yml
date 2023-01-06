@@ -9,9 +9,8 @@ jobs:
     env:
       artifact-name-1: $GITHUB_RUN_NUMBER
       artifact-name-2: ${GITHUB_RUN_NUMBER}
-      artifact-name-3: ${github.GITHUB_RUN_NUMBER}
+      artifact-name-3: ${{ github.GITHUB_RUN_NUMBER }}
 
-    defaults:
     steps:
     - name: Print
       run: |
