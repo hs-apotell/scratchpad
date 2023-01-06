@@ -16,6 +16,6 @@ jobs:
       run: |
         env
 
-        echo ${{ env.artifact-name-1 }}
-        echo ${{ env.artifact-name-2 }}
-        echo ${{ env.artifact-name-3 }}
+        echo artifact-name-1=${{ env.artifact-name-1 }}
+        echo artifact-name-2=${{ env.artifact-name-2 }}
+        echo artifact-name-3=${{ env.artifact-name-3 }}
