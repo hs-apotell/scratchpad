@@ -6,10 +6,14 @@ on:
 jobs:
   scratchpad:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        run_id: [1, 2]
     env:
       artifact-name-1: $GITHUB_RUN_NUMBER
       artifact-name-2: ${GITHUB_RUN_NUMBER}
-      artifact-name-3: ${{ github.GITHUB_RUN_NUMBER }}
+      artifact-name-3: sl-$GITHUB_RUN_NUMBER-${{ matrix.run_id }}
 
     steps:
     - name: Print
