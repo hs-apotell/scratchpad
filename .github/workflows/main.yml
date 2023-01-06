@@ -2,58 +2,21 @@ name: 'main'
 
 on:
   push:
-  pull_request:
 
 jobs:
-  windows-msys2:
-    runs-on: windows-latest
+  scratchpad:
+    runs-on: ubuntu-latest
+    env:
+      artifact-name-1: $GITHUB_RUN_NUMBER
+      artifact-name-2: ${GITHUB_RUN_NUMBER}
+      artifact-name-3: ${github.GITHUB_RUN_NUMBER}
 
     defaults:
-      run:
-        shell: msys2 {0}
-
     steps:
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.8
-        architecture: x64
-
-    - name: Setup Msys2
-      uses: msys2/setup-msys2@v2
-      with:
-        msystem: MSYS
-        update: true
-        install: make git diffutils
-      env:
-        MSYS2_PATH_TYPE: inherit
-
-    - name: Configure shell environment variables
+    - name: Print
       run: |
-        export Py3_ROOT_DIR=`cygpath -u $pythonLocation`
-
-        echo "Py3_ROOT_DIR=$Py3_ROOT_DIR" >> $GITHUB_ENV
-        echo "PATH=$Py3_ROOT_DIR:$PATH" >> $GITHUB_ENV
-
-        echo "$Py3_ROOT_DIR" >> $GITHUB_PATH
-
-    - name: Show shell configuration
-      env:
-        PATH: ${{ env.PATH }}
-      run: env
-
-    - name: Show shell configuration
-      run: |
-        export PATH=${{ env.PATH }}
-
         env
 
-        echo where git && git --version
-        where git && git --version
-
-        echo where make && make --version
-        where make && make --version
-
-        echo where python3 && python3 --version
-        where python3 && python3 --version
-
+        echo ${{ env.artifact-name-1 }}
+        echo ${{ env.artifact-name-2 }}
+        echo ${{ env.artifact-name-3 }}
