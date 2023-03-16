@@ -22,11 +22,11 @@ jobs:
       id: author-date
       with:
         script: |
-          const commit_details = await github.git.getCommit({
+          const commit_details = await github.rest.repos.getCommit({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            commit_sha: context.sha });
-          return commit_details.data.author.date
+            ref: context.sha });
+          return commit_details.data.commit.author.date
 
     - name: Print
       run: |
