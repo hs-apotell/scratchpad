@@ -10,21 +10,27 @@ on:
 jobs:
   scratchpad:
     name: "Linux | Install | ${{ matrix.run_id }}"
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        run_id: [1, 2]
-    env:
-      artifact-name-1: $GITHUB_RUN_NUMBER
-      artifact-name-2: ${{ github.run_number }}
-      artifact-name-3: sl-$GITHUB_RUN_NUMBER-${{ matrix.run_id }}
+        os: [ubuntu-latest, windows-latest]
 
     steps:
+    - name: Get top commit details
+      uses: actions/github-script@v6.4.0
+      id: author-date
+      with:
+        script: |
+          const commit_details = await github.git.getCommit({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            commit_sha: context.sha });
+          return commit_details.data.author.date
+
     - name: Print
       run: |
-        env
+        export COMMITTED_AT=$(date -d ${{ steps.author-date.outputs.result }} +'%Y.%m.%d_%H.%M.%S')
+        echo COMMITTED_AT-1=$COMMITTED_AT
+        echo COMMITTED_AT=2=${{ env.COMMITTED_AT }}
 
-        echo artifact-name-1=${{ env.artifact-name-1 }}
-        echo artifact-name-2=${{ env.artifact-name-2 }}
-        echo artifact-name-3=${{ env.artifact-name-3 }}
